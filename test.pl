@@ -2,7 +2,7 @@
 
 
 use strict;
-use ldap;
+use DSMLLDAP;
 
 my $xml;
 open IN, "< $ARGV[0]";
@@ -10,5 +10,5 @@ while (<IN>) {
 	$xml .= $_;
 }
 close IN;
-ldap::handle($xml);
+DSMLLDAP::handle($xml);
 

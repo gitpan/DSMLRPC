@@ -6,7 +6,7 @@ use HTTP::Status;
 
 use POSIX ":sys_wait_h";
 
-use ldap;
+use DSMLLDAP;
 
 sub zombie_reaper { 
 	while (waitpid(-1, WNOHANG) > 0) 
@@ -60,8 +60,11 @@ sub HttpdChild {
 		}
 		elsif ($r->method eq 'POST') {
 			my $req = $r->content;
-			$xml = ldap::handle($req);
-
+			open OUT, "> /tmp/req.xml";
+			print OUT $req;
+			close OUT;
+			$xml = DSMLLDAP::handle($req);
+			
 			open OUT, "> $xmlfile";
 			print OUT $xml;
 			close OUT;

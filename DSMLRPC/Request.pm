@@ -1,5 +1,6 @@
 package DSMLRPC::Request;
 
+$VERSION = '0.1';
 sub new {
 	my $class = shift;
 	my ($type, $attrs, $els, $fils, $list) = @_;

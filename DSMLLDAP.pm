@@ -15,24 +15,19 @@ use Data::Dumper;
 
 use DSMLRPC;
 
-$VERSION = '0.1';
+my $VERSION = '0.1';
 
 my $debug = 1;
 
 my $xsd = "xsd/DSMLv2.xsd";
 
-my $batchResponse_open =  '<?xml version="1.0" encoding="UTF-8"?><batchResponse xmlns="urn:oasis:names:tc:DSML:2:0:core">';
-
-my $batchResponse_close = '</batchResponse>';
-
+my $ldapUsr = 'cn=admin,dc=lyra,dc=osd';
+my $ldapPwd = 'pippo';
 
 # Si connette ad un server LDAP
 sub doBind {
 	
 	my $hostport = shift;
-	my $user = shift || '';
-	my $pwd = shift || '';
-	
 	
 	my $ldap = Net::LDAP->new($hostport) or do
 		{ 
@@ -42,13 +37,13 @@ sub doBind {
 			return; 
 		};
 	my $msg;	
-	$msg = $ldap->bind($user,
-                       password=> $pwd,
+	$msg = $ldap->bind($ldapUsr,
+                       password=> $ldapPwd,
                        version => 3)
-		if ($user ne '');
+		if ($ldapUsr ne '');
 	
 	$msg = $ldap->bind(version => 3)
-		if ($user eq '');
+		if ($ldapUsr eq '');
 	
 	if ($msg->is_error()) {
 		print $msg->error_text if ($debug);
@@ -142,7 +137,7 @@ sub doSearch {
 								 sizelimit => $sizeLimit );
 		ErrorResponse($msg->error_name, $msg->error_text) 
 			if ($msg->is_error());
-		SearchReponse($msg) unless ($msg->is_error());
+		SearchResponse($msg) unless ($msg->is_error());
 	}
 }
 
@@ -171,7 +166,7 @@ sub doModify {
 		$changes->[$k++] = $el;
 	}
 	
-	my $ldap = doBind($hostname.":".$port, 'cn=admin,dc=lyra,dc=osd', 'pippo');	
+	my $ldap = doBind($hostname.":".$port);	
 	if (defined $ldap) {
 		my $msg = $ldap->modify($dn, changes => $changes);
 		ErrorResponse($msg->error_name, $msg->error_text) 
@@ -196,7 +191,7 @@ sub doAdd {
 		$attrs->[$k++] = $_->attrs->{name};
 		$attrs->[$k++] = $_->vals;
 	}
-	my $ldap = doBind($hostname.":".$port, 'cn=admin,dc=lyra,dc=osd', 'pippo');	
+	my $ldap = doBind($hostname.":".$port);	
 
 	if (defined $ldap) {
 		my $msg = $ldap->add($dn, attrs => $attrs);
@@ -219,7 +214,7 @@ sub doDelete {
 	my $dn       = $obj->reqAttrs->{dn};
 
 	print Dumper($obj) if ($debug);
-	my $ldap = doBind($hostname.":".$port, 'cn=admin,dc=lyra,dc=osd', 'pippo');	
+	my $ldap = doBind($hostname.":".$port);	
 
 	if (defined $ldap) {
 		my $msg = $ldap->delete($dn);
@@ -244,7 +239,7 @@ sub doModifyDN {
 	my $newsup   = $obj->reqAttrs->{newSuperior};
 	
 	print Dumper($obj) if ($debug);
-	my $ldap = doBind($hostname.":".$port, 'cn=admin,dc=lyra,dc=osd', 'pippo');	
+	my $ldap = doBind($hostname.":".$port);	
 
 	if (defined $ldap) {
 		my $msg = $ldap->moddn($dn, newrdn       => $newrdn,
@@ -269,7 +264,7 @@ sub doCompare {
 	
 	my $element = $obj->reqElements->[0]; # ce n'è solo uno
 	
-	my $ldap = doBind($hostname.":".$port, 'cn=admin,dc=lyra,dc=osd', 'pippo');	
+	my $ldap = doBind($hostname.":".$port);	
 	
 	if (defined $ldap) {
 		my $msg = $ldap->compare($dn, attr  => $element->attrs->{name},

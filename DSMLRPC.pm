@@ -9,18 +9,19 @@ require Exporter;
 
 @EXPORT_OK = qw();
 
+$VERSION = '0.1';
+
 use strict;
 use Data::Dumper;
 
 use DSMLRPC::Request;
 use DSMLRPC::Element;
 
-$VERSION = '0.1'
 
 # PARTI COMUNI DELLA RISPOSTA
-my $batchResponse_open =  '<?xml version="1.0" encoding="UTF-8"?><batchResponse xmlns="urn:oasis:names:tc:DSML:2:0:core">';
+my $batchResponseOpen =  '<?xml version="1.0" encoding="UTF-8"?><batchResponse xmlns="urn:oasis:names:tc:DSML:2:0:core">';
 
-my $batchResponse_close = '</batchResponse>';
+my $batchResponseClose = '</batchResponse>';
 
 
 # COSTANTI RELATIVI AGLI OPERATORI DEL FILTRO
@@ -152,7 +153,7 @@ sub end {
 		$el eq $ReqTypes->{$reqType}->[0]) {
 		# OK creo un oggetto Element e lo
 		# inserisco fra quelli della richiesta
-		my $e = DSML::Element->new($elAttrs, $values);
+		my $e = DSMLRPC::Element->new($elAttrs, $values);
 		push @$reqElements, $e;
 	}
 	elsif ($el eq $ReqTypes->{$reqType}->[0]) {
@@ -185,7 +186,10 @@ sub end {
 	if ($el eq $reqType) {
 		# Il parsing è finito 
 		# Creo l'oggetto Request
-		$DSMLrequest = DSML::Request->new($reqType, $reqAttrs, 
+		if ($reqFilters !~ /\&|\!|\|/) {
+			$reqFilters =~ s/\((.+)\)/$1/;
+		}
+		$DSMLrequest = DSMLRPC::Request->new($reqType, $reqAttrs, 
 									      $reqElements, $reqFilters,
 									      $attrsList);		
 		
@@ -237,13 +241,13 @@ sub ErrorResponse {
 	my $name = shift;
 	my $msg = shift;
 	chomp($msg);	
-	$DSMLresponse = $batchResponse_open;
+	$DSMLresponse = $batchResponseOpen;
 
-	$DSMLresponse .= '<errorResponse type='.$name.'>';
+	$DSMLresponse .= '<errorResponse type="'.$name.'">';
 	$DSMLresponse .= '<message>'.$msg.'</message>';
 	$DSMLresponse .= '</errorResponse>';
 
-	$DSMLresponse .= $batchResponse_close;
+	$DSMLresponse .= $batchResponseClose;
 	
 #	print $DSMLresponse;
 #	return $DSMLresponse;
@@ -256,7 +260,7 @@ sub GeneralResponse {
 	my $code = shift;
 	my $msg = shift;
 	
-	$DSMLresponse = $batchResponse_open . $RespTypes->{$type} . $batchResponse_close;
+	$DSMLresponse = $batchResponseOpen . $RespTypes->{$type} . $batchResponseClose;
 	
 	$msg =~ tr/[A-Z]/[a-z]/;
 	$msg =~ s/ldap_//;
@@ -270,7 +274,7 @@ sub SearchResponse {
 
     my @entries = $search->sorted();
 
-    $DSMLresponse = $batchResponse_open . "<searchResponse>\n";
+    $DSMLresponse = $batchResponseOpen . "<searchResponse>\n";
 
     #my $searchopen = "<searchResultEntry>\n\t<dn>###DN###</dn>\n";
     my $searchopen = "<searchResultEntry dn=\"###DN###\">\n";
@@ -321,7 +325,7 @@ sub SearchResponse {
 
     }
 
-    $DSMLresponse .= "</searchResponse>\n" . $batchResponse_close;
+    $DSMLresponse .= "</searchResponse>\n" . $batchResponseClose;
 
     #return $DSMLresponse;
 }

@@ -1,6 +1,8 @@
 package DSMLRPC::Element;
 
 
+$VERSION = '0.1';
+
 sub new {
 	my $class = shift;
 
