@@ -16,11 +16,11 @@ use Crypt::PasswdMD5;
 
 use DSMLRPC;
 
-my $VERSION = '0.1';
+my $VERSION = '0.6';
 
 my $debug = 1;
 
-my $xsd = "xsd/DSMLv2.xsd";
+#my $xsd = "xsd/DSMLv2.xsd";
 
 
 sub new {
@@ -45,10 +45,12 @@ sub doBind {
 	my $ldapUsr = shift;
 	my $ldapPwd = shift;
 	
+	print "[$$] HOST $hostport USER $ldapUsr PWD $ldapPwd\n" if ($debug);
+	
 	my $ldap = Net::LDAP->new($hostport) or do
 		{ 
 			ErrorResponse("couldNotConnect", 
-			   			  "LDAP has refused connection ($hostport)"); 
+	   			      "LDAP has refused connection ($hostport)"); 
 			print $@,"\n" if ($debug);
 			return; 
 		};
@@ -102,15 +104,22 @@ sub handle {
 	$parser->parse($xml);
 	# Oggetto contenente la richiesta
 	my $dsml = GetRequest();
+
 	
-	for ($dsml->reqType) {
-		/searchRequest/  and do doSearch($dsml, $obj);
-		/modifyRequest/  and do doModify($dsml, $obj);
-		/addRequest/     and do doAdd($dsml, $obj);
-		/delRequest/     and do doDelete($dsml, $obj);
-		/modDNRequest/   and do doModifyDN($dsml, $obj);
-		/compareRequest/ and do doCompare($dsml, $obj);
-	}
+	doSearch($dsml, $obj)   if ($dsml->reqType eq 'searchRequest');
+	doModify($dsml, $obj)   if ($dsml->reqType eq 'modifyRequest');
+	doAdd($dsml, $obj)      if ($dsml->reqType eq 'addRequest');
+	doDelete($dsml, $obj)   if ($dsml->reqType eq 'delRequest');
+	doModifyDN($dsml, $obj) if ($dsml->reqType eq 'modDNRequest');
+	doCompare($dsml, $obj)  if ($dsml->reqType eq 'compareRequest');
+#	for ($dsml->reqType) {
+#		/searchRequest/  and do doSearch($dsml, $obj);
+#		/modifyRequest/  and do doModify($dsml, $obj);
+#		/addRequest/     and do doAdd($dsml, $obj);
+#		/delRequest/     and do doDelete($dsml, $obj);
+#		/modDNRequest/   and do doModifyDN($dsml, $obj);
+#		/compareRequest/ and do doCompare($dsml, $obj);
+#	}
 	GetResponse();	
 }
 
@@ -149,12 +158,15 @@ sub doSearch {
 	#my $ldap = doBind($hostname.":".$port, $obj->reqAttrs->{user}, $obj->reqAttrs->{pwd});	
 	
 	if ($ldap) {
+		print "[$$] Doing search on LDAP\n";
 		my $msg = $ldap->search( base      => $base,
 		                         scope     => $scope,
-				         attrs     => $attrs,
-					 filter    => $filter,
-					 deref     => $deref,
-					 sizelimit => $sizeLimit );
+								 attrs     => $attrs,
+								 filter    => $filter,
+								 deref     => $deref,
+								 sizelimit => $sizeLimit );
+
+		print "[$$] Search done on LDAP\n";
 		ErrorResponse($msg->error_name, $msg->error_text) 
 			if ($msg->is_error());
 		SearchResponse($msg) unless ($msg->is_error());

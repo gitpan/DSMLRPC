@@ -1,0 +1,48 @@
+Please contact me at: <URL:http://localhost:6890/>
+
+ [(|(cn=John*)(uid=la10*)]
+[1 - (] [0 - ]
+$VAR1 = bless( {
+                 'reqFilters' => '(|(cn=John*)(uid=la10*))',
+                 'reqType' => 'searchRequest',
+                 'reqElements' => undef,
+                 'reqAttrs' => {
+                                 'dn' => 'dc=iperbole,dc=bologna,dc=it',
+                                 'host' => 'asterix.tixteam.net',
+                                 'sizeLimit' => '0',
+                                 'scope' => 'wholeSubtree',
+                                 'port' => '389'
+                               },
+                 'attrsList' => [
+                                  '*'
+                                ]
+               }, 'DSMLRPC::Request' );
+[14249] HOST asterix.tixteam.net:389 USER cn=ipermgr,dc=iperbole,dc=bologna,dc=it PWD yaa94hIo
+[14249] Doing search on LDAP
+[14249] Search done on LDAP
+
+ [(|(technicalReferent=uniqueIdentifier=12283,ou=People,dc=iperbole,dc=bologna,dc=it)(accountPrincipal=uniqueIdentifier=12283,ou=People,dc=iperbole,dc=bologna,dc=it)]
+[1 - (] [0 - ]
+$VAR1 = bless( {
+                 'reqFilters' => '(|(technicalReferent=uniqueIdentifier=12283,ou=People,dc=iperbole,dc=bologna,dc=it)(accountPrincipal=uniqueIdentifier=12283,ou=People,dc=iperbole,dc=bologna,dc=it))',
+                 'reqType' => 'searchRequest',
+                 'reqElements' => undef,
+                 'reqAttrs' => {
+                                 'dn' => 'ou=Account,dc=iperbole,dc=bologna,dc=it',
+                                 'host' => 'asterix.tixteam.net',
+                                 'sizeLimit' => '0',
+                                 'scope' => 'wholeSubtree',
+                                 'port' => '389'
+                               },
+                 'attrsList' => [
+                                  'uid',
+                                  'userPassword',
+                                  'mailActive',
+                                  'dialupAccess',
+                                  'accountPrincipal',
+                                  'technicalReferent'
+                                ]
+               }, 'DSMLRPC::Request' );
+[14278] HOST asterix.tixteam.net:389 USER cn=ipermgr,dc=iperbole,dc=bologna,dc=it PWD yaa94hIo
+[14278] Doing search on LDAP
+[14278] Search done on LDAP

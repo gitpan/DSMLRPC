@@ -9,7 +9,7 @@ require Exporter;
 
 @EXPORT_OK = qw();
 
-$VERSION = '0.5';
+$VERSION = '0.6';
 
 use strict;
 use Data::Dumper;
@@ -169,6 +169,7 @@ sub end {
 		my $arg1;
 		my $arg2;
 		my $filter = '';
+		
 		while ($#FilterStack > 0) {
 			if ($FilterStack[$#FilterStack] =~ /FILTERS$/) {
 				$FilterStack[$#FilterStack] =~ s/FILTERS$/$filter/;
@@ -197,7 +198,6 @@ sub end {
 						$filter .= $arg2;
 					}
 				}
-				print "[$filter]\n";
 			}
 		}
 		if ($FilterStack[$#FilterStack] =~ /FILTERS$/) {
@@ -206,7 +206,20 @@ sub end {
 		elsif ($FilterStack[$#FilterStack] =~ /!FILTER\)$/) {
 			$FilterStack[$#FilterStack] =~ s/FILTER/$filter/;
 		}
-		$reqFilters .= (pop @FilterStack).')';
+		$reqFilters .= $filter unless ($#FilterStack >= 0);
+		$reqFilters .= (pop @FilterStack) if ($#FilterStack >= 0);
+		print "\n [$reqFilters]\n";
+		$reqFilters =~ /([\(]*)/g;
+		my $parA = $1;
+		$reqFilters =~ /([\)]*)/g;
+		my $parC = $1;
+		print "[",length($parA)," - $parA] [",length($parC)," - $parC]\n";
+		if ( length($parA) > length($parC) ) {
+			$reqFilters .= ')';
+		}
+		elsif ( length($parA) == length($parC) && length($parC) == 1 ) {
+			$reqFilters = '(' . $reqFilters . ')';
+		}
 		$FilterFlag = 0;
 	}
 	
@@ -217,8 +230,8 @@ sub end {
 			$reqFilters =~ s/\((.+)\)/$1/;
 		}
 		$DSMLrequest = DSMLRPC::Request->new($reqType, $reqAttrs, 
-									      $reqElements, $reqFilters,
-									      $attrsList);		
+					             $reqElements, $reqFilters,
+						     $attrsList);		
 		
 	}
 	

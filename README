@@ -2,11 +2,12 @@ This module contain the DSMLRPC.pm module whith friends (DSML::Request, DSML::El
 and DSMLLDAP.pm.
 
 You need perl5.004 or better to install this package. You should also
-have the MIME::Base64, Net::LDAP, XML::Parser (and Data::Dumper for debug)
+have the Crypt::PasswdMD5, MIME::Base64, Net::LDAP, XML::Parser (and Data::Dumper for debug)
 modules installed. Installation is otherwise as usual:
 
   perl Makefile.PL
   make
+  make test
   make install
 
 Questions about how to use this library should be directed to the

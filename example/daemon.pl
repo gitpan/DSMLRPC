@@ -16,14 +16,15 @@ sub zombie_reaper {
 	$SIG{CHLD} = \&zombie_reaper; 
 } 
 $SIG{CHLD} = \&zombie_reaper;
+
 my $child_pid = fork;
 if ( $child_pid ) {
       	exit;
 }
 
 
-my $user = shift @ARGV || "cn=ipermgr,dc=iperbole,dc=bologna,dc=it";
-my $pwd = shift @ARGV || "yaa94hIo";
+my $user = shift @ARGV || "cn=admin,dc=yacme,dc=com";
+my $pwd = shift @ARGV || "pwd";
 
 my $host = shift @ARGV || '127.0.0.1';
 my $port = shift @ARGV || 6890;
