@@ -1,0 +1,20 @@
+<?xml version="1.0"  encoding="UTF-8"?> 
+<batchRequest xmlns:dsml="urn:oasis:names:tc:DSML:2:0:core"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<searchRequest host="localhost" port="389" dn="dc=lyra" scope="wholeSubtree" sizeLimit="1000">
+    <filter>
+        <or>
+            <substrings name="cn">
+                <initial>ad</initial>
+            </substrings>
+            <equalityMatch name="cn">
+                <value>manager</value>
+            </equalityMatch>
+        </or>
+    </filter>
+     <attributes>
+          <attribute name="cn"/>
+     </attributes>
+</searchRequest>
+</batchRequest>

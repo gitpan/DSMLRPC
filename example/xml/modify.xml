@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<batchRequest  xmlns:dsml="urn:oasis:names:tc:DSML:2:0:core" 
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+
+	<modifyRequest host="localhost" port="389" dn="cn=admin,dc=lyra,dc=osd">
+		<modification name="description" operation="replace">
+			<value>LYRA super-administrator</value>
+		</modification>
+	</modifyRequest> 
+</batchRequest>
+

@@ -1,0 +1,22 @@
+<?xml version="1.0"  encoding="UTF-8"?> 
+<batchRequest xmlns:dsml="urn:oasis:names:tc:DSML:2:0:core"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<searchRequest host="localhost" port="389" dn="o=test" scope="wholeSubtree" derefAliases="neverDerefAliases" sizeLimit="1000">
+    <filter>
+        <and>
+            <substrings name="givenName">
+                <initial>S</initial>
+            </substrings>
+            <equalityMatch name="objectclass">
+                <value>inetorgperson</value>
+            </equalityMatch>
+        </and>
+    </filter>
+     <attributes>
+          <attribute name="cn"/>
+          <attribute name="sn"/>
+          <attribute name="l"/>
+     </attributes>
+</searchRequest>
+</batchRequest>

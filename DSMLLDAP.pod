@@ -1,0 +1,96 @@
+=head1 NAME
+
+DSML-LDAP - Make LDAP operation using DSML-RPC module
+
+=head1 SYNOPSIS
+
+ use HTTP::Daemon;
+ use HTTP::Status;
+ 
+ use DSML-LDAP;
+
+ my $httpd = HTTP::Daemon->new || die;
+ print "Please contact me at: <URL:", $httpd->url, ">\n";
+ while (my $c = $httpd->accept) {
+ 	while (my $r = $c->get_request) {
+		if ($r->method eq 'POST') {
+            my $req = $r->content;
+			$xml = DSML-LDAP::handle($req);
+			....
+			# Build HTTP response
+			....
+			$httpd->send_response($response);
+			
+		}
+		else {
+			$httpd->send_error(RC_FORBIDDEN);
+		}
+	}
+ }
+      
+=head1 DESCRIPTION
+ 
+ This module use DSML-RPC to parse XML and Net::LDAP to perform
+ operation on a LDAP Server.
+ In the example below I use HTTP protocol to transport DSML request
+ and response.
+ 
+=head1 METHODS
+
+=over 4
+
+=item handle
+
+ Receive DSML request, parse it using DSML-RPC, perform operation and 
+ return DSML result.
+ 
+=item doBind
+ 
+ Perform bind operation on LDAP server specified in the request.
+
+=item doSearch
+
+ Perform search operation on a LDAP server using information contained
+ in DSML::Request object
+
+=item doModify
+ 
+ Perform modify operation on a LDAP server using information contained
+ in DSML::Request object
+
+=item doAdd
+ 
+ Perform add operation on a LDAP server using information contained
+ in DSML::Request object
+ 
+=item doDelete
+ 
+ Perform delete operation on a LDAP server using information contained
+ in DSML::Request object
+ 
+=item doModifyDN
+ 
+ Perform modifyDN operation on a LDAP server using information contained
+ in DSML::Request object
+ 
+=item doCompare
+ 
+ Perform compare operation on a LDAP server using information contained
+ in DSML::Request object
+ 
+=head1 SEE ALSO
+
+L<Net::LDAP>,
+L<DSML-RPC>
+
+=head1 AUTHOR
+
+Sevastian Foglia E<lt>sf@yacme.comE<gt>
+YACME s.r.l. E<lt>http://www.yacme.comE<gt>
+
+=head1 COPYRIGHT
+
+Copyright (c) 2004 YACME s.r.l. All rights reserved. This program is
+free software; you can redistribute it and/or modify it under the same
+terms as Perl itself.
+

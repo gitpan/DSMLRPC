@@ -1,0 +1,7 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+<batchRequest xmlns:dsml="urn:oasis:names:tc:DSML:2:0:core" 
+				xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<delRequest host="localhost" port="389" dn="cn=usertest,l=bologna,dc=lyra,dc=osd"/>
+</batchRequest>
+

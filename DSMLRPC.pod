@@ -1,0 +1,101 @@
+=head1 NAME
+
+DSML-RPC (Directory Service Markup Language RPC)
+
+=head1 SYNOPSIS
+ 
+ use XML::Parser;
+ use DSML;
+
+ my $parser =  new XML::Parser();
+ $parser->setHandlers( Start => \&start,
+                       End => \&end,
+                       Char => \&char);
+
+ 
+ $parser->parse($dsml);
+ 
+ my $obj = GetRequest();
+ 
+ ....
+ # Do LDAP operation
+ ....
+ 
+ ErrorResponse($msg->error_name, $msg->error_text) if ($error);
+ # Request isn't search
+ GeneralResponse($obj->reqType, $msg->code, $msg->error_name) unless($error);
+ 
+ # Request is search
+ SearchResponse($msg);
+
+=head1 DESCRIPTION
+ 
+ This module use XML::Parser to parse DSML document and build a structure which contain
+ all element to make requests to an LDAP server.
+
+=head1 METHODS
+
+=over 4
+
+=item start
+
+ This is the handler for XML::Parser Start.
+ 
+
+=item end
+
+ This is the handler for XML::Parser End.
+
+=item char
+
+ This is the handler for XML::Parser Char.
+
+=item GetRequest
+
+ Return an DSML::Request object which contains information to make 
+ LDAP operation. This object is created during parsing of XML.
+
+=item GetResponse
+ 
+ Return a scalar which contains result of LDAP operation. It is in 
+ XML.
+
+=item ErrorResponse (NAME, MESSAGE)
+ 
+ If LDAP operation returns an error, this method build an XML
+ that contains name of error and a short descrption of it.
+
+=item SearchResponse (SEARCH)
+ 
+ This method get in input a Net::LDAP::Search object returned by Net::LDAP 
+ search method and build an XML from it.
+
+=item GeneralResponse (TYPE, CODE, MESSAGE)
+
+ This method build an XML for other LDAP Operation. It get type of operation
+ (modifyRequest, addRequest, delRequest, ...), result code and 
+ a short description of it.
+
+=head1 SEE ALSO
+
+L<Net::LDAP>,
+L<XML::Parser>
+
+=head1 NOTES
+
+ This module is based on DSMLv2.xsd contained in this distribution. 
+ I made some changes to original XML schema definition because I needed
+ information about host, port (to contact LDAP server), username and 
+ password (to authenticate on LDAP server).
+
+=head1 AUTHOR
+
+Sevastian Foglia E<lt>sf@yacme.comE<gt>
+YACME s.r.l. E<lt>http://www.yacme.comE<gt>
+
+=head1 COPYRIGHT
+
+Copyright (c) 2004 YACME s.r.l. All rights reserved. This program is
+free software; you can redistribute it and/or modify it under the same
+terms as Perl itself.
+

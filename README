@@ -1,0 +1,20 @@
+This module contain the DSMLRPC.pm module whith friends (DSML::Request, DSML::Element)
+and DSMLLDAP.pm.
+
+You need perl5.004 or better to install this package. You should also
+have the MIME::Base64, Net::LDAP, XML::Parser (and Data::Dumper for debug)
+modules installed. Installation is otherwise as usual:
+
+  perl Makefile.PL
+  make
+  make install
+
+Questions about how to use this library should be directed to the
+it.comp.lang.perl USENET Newsgroup or to the yacme.public.supporto 
+YACME Newsgroup (news.yacme.com).
+Bug reports and suggestions for improvements can be sent to 
+<sf@yacme.com>. 
+
+
+Copyright 2004 (c) Sevastian Foglia, YACME s.r.l.
+

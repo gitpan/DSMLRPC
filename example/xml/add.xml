@@ -1,0 +1,19 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+	<batchRequest 
+		xmlns:dsml="urn:oasis:names:tc:DSML:2:0:core" 
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		
+   	<addRequest host="localhost" port="389" dn="cn=testuser,dc=lyra,dc=osd">
+		<attr name="objectclass">
+			<value>organizationalRole</value>
+		</attr>
+		<attr name="cn">
+			<value>testuser</value>
+		</attr>
+		<attr name="description">
+			<value>LYRA test user</value>
+		</attr>
+	</addRequest>
+</batchRequest>
+

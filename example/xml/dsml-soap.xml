@@ -1,0 +1,223 @@
+Sample DSMLv2/SOAP Document to Add a User
+
+Request Document
+
+The following DSMLv2 document is a request to add a user:
+
+<?xml version="1.0"  encoding="UTF-8"?>
+	<dsml:batchRequest 
+		xmlns:dsml="urn:oasis:names:tc:DSML:2:0:core" 
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		
+   	<dsml:addRequest  dn="cn=cjhones,o=test">
+		<attr name="objectclass">
+			<value>top</value>
+		</attr>
+		<attr name="objectclass">
+			<value>person</value>
+		</attr>
+		<attr name="objectclass">
+			<value>organizationalPerson</value>
+		</attr>
+		<attr name="objectclass">
+			<value>inetorgperson</value>
+		</attr>
+		<attr name="sn">
+			<value>Johnson</value>
+		</attr>
+		<attr name="givenName">
+			<value>cjhones</value>
+		</attr>
+		<attr name="title">
+			<value>Software Design Engineer</value>
+		</attr>
+	</dsml:addRequest>
+</dsml:batchRequest>
+
+Response DocumentThe following DSMLv2 document is a response to the above add request:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<soap-env:Envelope xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/">
+<soap-env:Body>
+	<batchResponse xmlns="urn:oasis:names:tc:DSML:2:0:core" 
+				xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<addResponse requestID="7">
+			<resultCode code="0" descr="Success" />
+		</addResponse>
+	</batchResponse>
+</soap-env:Body>
+</soap-env:Envelope>
+
+
+Sample DSMLv2/SOAP Document to Modify the Distinguished Name (DN)
+
+Request Document
+
+The following DSMLv2 document is a request to modify a DN.
+
+<?xml version="1.0"  encoding="UTF-8"?>
+<dsml:batchRequest xmlns:dsml="urn:oasis:names:tc:DSML:2:0:core" 
+				xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<dsml:modDNRequest  dn="cn=cjhones,o=test"
+						newrdn="cn=AliceW" 
+						deleteoldrdn="true"
+						newSuperior="O=org">
+	</dsml:modDNRequest>
+</dsml:batchRequest>
+
+Response Document
+
+<?xml version="1.0" encoding="UTF-8"?>
+<soap-env:Envelope xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap-env:Body>
+		<batchResponse 
+			xmlns="urn:oasis:names:tc:DSML:2:0:core" 
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			
+		<modDNResponse requestID="22">
+			<resultCode code="0" descr="Success" />
+		</batchResponse>
+	</soap-env:Body>
+</soap-env:Envelope>
+
+
+Sample DSMLv2/SOAP Document to Modify Entries
+
+Request Document
+
+<?xml version="1.0"  encoding="UTF-8"?>
+	<dsml:batchRequest 
+		xmlns:dsml="urn:oasis:names:tc:DSML:2:0:core" 
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+		<dsml:modifyRequest  dn="cn=cjhones,o=test">
+			<modification name="telephoneNumber" operation="add">
+				<value>536 354 2343</value>
+				<value>234 212 4534</value>
+			</modification>
+			<modification name="sn" operation="replace">
+				<value>Richard</value>
+			</modification>
+		</dsml:modifyRequest>
+</dsml:batchRequest>
+
+
+Response Document
+
+<?xml version="1.0" encoding="UTF-8"?>
+<soap-env:Envelope 
+	xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap-env:Body>
+		<batchResponse xmlns="urn:oasis:names:tc:DSML:2:0:core" 
+						xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+						xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+						
+			<modifyResponse requestID="15">
+				<resultCode code="0" descr="Success" />
+			</modifyResponse>
+		</batchResponse>
+	</soap-env:Body>
+</soap-env:Envelope>
+
+
+Sample DSMLv2/SOAP Document to Search for Entries
+
+Request Document
+
+<?xml version="1.0"  encoding="UTF-8"?>
+<dsml:batchRequest xmlns:dsml="urn:oasis:names:tc:DSML:2:0:core" 
+				xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<dsml:searchRequest dn="o=test" scope="wholeSubtree" derefAliases="neverDerefAliases" sizeLimit="1000">
+	<dsml:filter>
+		<dsml:and>
+			<dsml:substrings name="givenName">
+				<initial>S</initial>
+			</dsml:substrings>
+			<dsml:equalityMatch name="objectclass">
+				<value>inetorgperson</value>
+			</dsml:equalityMatch>
+		</dsml:and>
+	</dsml:filter>
+     <dsml:attributes>
+          <dsml:attribute name="cn"/>
+          <dsml:attribute name="sn"/>
+          <dsml:attribute name="l"/>
+     </dsml:attributes>
+</dsml:searchRequest>
+</dsml:batchRequest>
+ 
+
+Response Document
+
+<?xml version="1.0" encoding="UTF-8"?>
+<soap-env:Envelope xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/">
+<soap-env:Body>
+	<batchResponse xmlns="urn:oasis:names:tc:DSML:2:0:core" 
+				xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<searchResponse requestID="4">
+			<searchResultEntry dn="cn=JSmith,o=test" requestID="4">
+				<attr name="l">
+					<value>Alaska</value>
+				</attr>
+				<attr name="cn">
+					<value>James Smith</value>
+					<value>Jim Smith</value>
+					<value>Jimmy Smith</value>
+					<value>JSmith</value>
+				</attr>
+				<attr name="sn">
+					<value>Smith</value>
+				</attr>
+			</searchResultEntry>
+			<searchResultEntry dn="cn=sunil,o=test" requestID="4">
+				<attr name="cn">
+					<value>sunil</value>
+				</attr>
+				<attr name="sn">
+					<value>kr</value>
+				</attr>
+			</searchResultEntry>
+			<searchResultDone requestID="4">
+				<resultCode code="0" descr="Success" />
+			</searchResultDone>
+	</searchResponse>
+</batchResponse>
+</soap-env:Body>
+</soap-env:Envelope>
+
+
+Sample DSMLv2/SOAP Document to Delete an Entry
+
+Request Document
+
+<?xml version="1.0"  encoding="UTF-8"?>
+<dsml:batchRequest xmlns:dsml="urn:oasis:names:tc:DSML:2:0:core" 
+				xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<dsml:delRequest  dn="cn=cjhones,o=test">
+	</dsml:delRequest>
+</dsml:batchRequest>
+
+
+Response Document
+
+<?xml version="1.0" encoding="UTF-8"?>
+<soap-env:Envelope xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap-env:Body>
+		<batchResponse xmlns="urn:oasis:names:tc:DSML:2:0:core" 
+					xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			<delResponse requestID="10">
+				<resultCode code="0" descr="Success" />
+			</delResponse>
+		</batchResponse>
+	</soap-env:Body>
+</soap-env:Envelope>
+
