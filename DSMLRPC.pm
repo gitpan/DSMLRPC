@@ -3,9 +3,9 @@ package DSMLRPC;
 require Exporter;
 
 @ISA 	= qw(Exporter);
-@EXPORT = qw(start end char 
+@EXPORT = qw(start end char resetVar 
              GetRequest GetResponse 
-			 ErrorResponse SearchResponse GeneralResponse);
+             ErrorResponse SearchResponse GeneralResponse);
 
 @EXPORT_OK = qw();
 
@@ -13,6 +13,7 @@ $VERSION = '0.1';
 
 use strict;
 use Data::Dumper;
+use MIME::Base64; 
 
 use DSMLRPC::Request;
 use DSMLRPC::Element;
@@ -29,7 +30,7 @@ my $batchResponseClose = '</batchResponse>';
 
 my %OpFilter = (  'and'             => '&FILTERS',
                   'or'              => '|FILTERS',
-                  'not'             => '!FILTER',
+                  'not'             => '(!FILTER)',
                   'greaterOrEqual'  => "(ATTR>=VAL)",
                   'lessOrEqual'     => "(ATTR<=VAL)",
                   'approxMatch'     => '(ATTR~=VAL)',
@@ -61,9 +62,9 @@ my $RespTypes = { modifyRequest   => '<modifyResponse>RESPONSE</modifyResponse>'
 
 
 
-my $current;
-my $reqType;
-my $reqAttrs;
+my $current = undef;
+my $reqType = undef;
+my $reqAttrs = undef;
 my $reqElements = undef;
 my $reqFilters  = undef;
 my $attrsList   = undef;
@@ -80,12 +81,20 @@ my $values;
 my $DSMLrequest;
 my $DSMLresponse;
 
+sub resetVar {
+	 $reqType = undef;
+	 $reqAttrs = undef;
+	 $reqElements = undef;
+	 $reqFilters  = undef;
+	 $attrsList   = undef;
+}
+
 sub start {
 
 	my $p = shift;
     my $el = shift;
     my %attrs = @_;
-	
+		
 	my $req = 0;
 	
 	if ($el eq 'extendedRequest') {
@@ -161,23 +170,41 @@ sub end {
 		my $arg2;
 		my $filter = '';
 		while ($#FilterStack > 0) {
-			if ($FilterStack[$#FilterStack] =~ /FILTER/) {
-				$FilterStack[$#FilterStack] =~ s/FILTER$|FILTERS$/$filter/;
+			if ($FilterStack[$#FilterStack] =~ /FILTERS$/) {
+				$FilterStack[$#FilterStack] =~ s/FILTERS$/$filter/;
+				$filter = '';
+			}
+			elsif ($FilterStack[$#FilterStack] =~ /!FILTER\)$/) {
+				$FilterStack[$#FilterStack] =~ s/FILTER/$filter/;
 				$filter = '';
 			}
 			else {
 				$arg2 = pop @FilterStack;
-				if ($arg2 =~ /.+\)$/ && $arg2 !~ /^\(/) {
+				if ($arg2 =~ /.+\)$/ && $arg2 !~ /^!?\(/) {
 					$arg1 = pop @FilterStack;
-					$filter .= $arg1.$arg2;
+					if ($filter =~ /^\(!\(.+\)$/) {
+						$filter = $arg1 .$arg2 . $filter;
+					}
+					else {
+						$filter .= $arg1.$arg2;
+					}
 				}
-				elsif ($arg2 =~ /^\(.+\)$/) {
-					$filter .= $arg2;
+				elsif ($arg2 =~ /^\(?!?\(.+\)$/) {
+					if ($filter =~ /^\(!\(.+\)$/) {
+						$filter = $arg2 . $filter;
+					}
+					else {
+						$filter .= $arg2;
+					}
 				}
+				print "[$filter]\n";
 			}
 		}
-		if ($FilterStack[$#FilterStack] =~ /FILTER/) {
-			$FilterStack[$#FilterStack] =~ s/FILTER$|FILTERS$/$filter/;
+		if ($FilterStack[$#FilterStack] =~ /FILTERS$/) {
+			$FilterStack[$#FilterStack] =~ s/FILTERS$/$filter/;
+		}
+		elsif ($FilterStack[$#FilterStack] =~ /!FILTER\)$/) {
+			$FilterStack[$#FilterStack] =~ s/FILTER/$filter/;
 		}
 		$reqFilters .= (pop @FilterStack).')';
 		$FilterFlag = 0;
@@ -215,8 +242,9 @@ sub char {
 	else {
 		
 		if ( $current eq 'value' ||
-			 $current eq 'initial' ||
-			 $current eq 'final' ) {
+	    	     $current eq 'initial' ||
+		     $current eq 'final' ||
+                     $current eq 'any') {
 				my @vals;
 				foreach (@data) {
 					next if ($_ !~ /[A-Za-z0-9]/);
@@ -249,8 +277,7 @@ sub ErrorResponse {
 
 	$DSMLresponse .= $batchResponseClose;
 	
-#	print $DSMLresponse;
-#	return $DSMLresponse;
+	#return $DSMLresponse;
 }
 
 
@@ -270,7 +297,7 @@ sub GeneralResponse {
 
 sub SearchResponse {
     
-	my $search = shift;
+    my $search = shift;
 
     my @entries = $search->sorted();
 
