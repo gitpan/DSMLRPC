@@ -9,7 +9,7 @@ require Exporter;
 
 @EXPORT_OK = qw();
 
-$VERSION = '0.1';
+$VERSION = '0.5';
 
 use strict;
 use Data::Dumper;

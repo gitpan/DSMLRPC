@@ -331,19 +331,19 @@ sub doCompare {
 # Ancora in test
 # Il validator non supporta tutti gli
 # elementi dell'xsd
-sub validate {
+#sub validate {
 	
-	use XML::SAX::ParserFactory;
-	use XML::Validator::Schema;
+#	use XML::SAX::ParserFactory;
+#	use XML::Validator::Schema;
 	
-	my $xml = shift;
-	my $validator = XML::Validator::Schema->new(file => $xsd);
-	my $parser = XML::SAX::ParserFactory->parser(Handler => $validator);
+#	my $xml = shift;
+#	my $validator = XML::Validator::Schema->new(file => $xsd);
+#	my $parser = XML::SAX::ParserFactory->parser(Handler => $validator);
 	
-	eval { $parser->parse_string($xml) };
-	return "Error: File validation failed: $@" if $@;
-	return 1;
+#	eval { $parser->parse_string($xml) };
+#	return "Error: File validation failed: $@" if $@;
+#	return 1;
 	
-}
+#}
 	
 1;
